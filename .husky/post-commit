@@ -1,0 +1,22 @@
+# Set GPG_TTY to allow signature prompt if needed
+export GPG_TTY=$(tty)
+
+# Skip in CI (e.g. GitHub Actions, GitLab CI, etc.)
+if [ -n "$CI" ]; then
+  echo "ℹ️ Skipping GPG check in CI environment."
+  exit 0
+fi
+
+# Skip for merge commits
+if git rev-parse --verify -q MERGE_HEAD; then
+  echo "ℹ️ Skipping GPG check for merge commit."
+  exit 0
+fi
+
+# Check if latest commit is signed with a good signature
+if ! git log -1 --pretty=%G? | grep -q '^G$'; then
+  echo "❌ Commit is not signed with a valid GPG key!"
+  exit 1
+fi
+
+echo "✅ Commit is signed and valid."
