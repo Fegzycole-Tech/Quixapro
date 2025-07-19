@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "prepare": "husky install",
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi",
     "lint": "pnpm --filter ./apps/* run lint",
     "format": "prettier --write .",
     "lint-staged": "lint-staged"
