@@ -1,6 +1,5 @@
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { DatabaseService } from './database/services/database.service';
 import { Module } from '@nestjs/common';
 
 @Module({
@@ -9,7 +8,6 @@ import { Module } from '@nestjs/common';
       isGlobal: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [DatabaseService],
 })
 export class AppModule {}
