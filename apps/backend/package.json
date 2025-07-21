@@ -9,14 +9,21 @@
     "dev": "nest start --watch",
     "build": "nest build",
     "start": "nest start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:migrate:prod": "pnpm prisma migrate deploy",
+    "prisma:studio": "prisma studio",
+    "prisma:reset": "prisma migrate reset --force --skip-seed"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@prisma/client": "^6.12.0",
     "@repo/eslint-config": "workspace:*",
+    "prisma": "^6.12.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },

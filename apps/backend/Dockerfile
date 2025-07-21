@@ -30,8 +30,6 @@ ENV HUSKY=0
 
 RUN pnpm install --prod --frozen-lockfile
 
-COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
+RUN pnpm --filter ./apps/backend exec prisma generate
 
 EXPOSE 5000
-
-CMD ["node", "apps/backend/dist/main"]
