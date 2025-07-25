@@ -1,0 +1,19 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts", "tsx"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.tsx?$": ["ts-jest", { "isolatedModules": true }]
+  },
+  "reporters": [
+    "default",
+    [
+      "jest-junit",
+      {
+        "outputFile": "junit-report/account-test-results.xml",
+        "ancestorSeparator": " > "
+      }
+    ]
+  ]
+}
