@@ -50,5 +50,7 @@ describe('Factory: User', () => {
     expect(user.email).toEqual(userData.email);
     expect(user.password).toEqual(userData.password);
     expect(user.photoUrl).toEqual(userData.photoUrl);
+    expect(user.createdAt).toBeDefined();
+    expect(user.updatedAt).toBeDefined();
   });
 });
