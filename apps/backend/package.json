@@ -14,7 +14,10 @@
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:migrate:prod": "pnpm prisma migrate deploy",
     "prisma:studio": "prisma studio",
-    "prisma:reset": "prisma migrate reset --force --skip-seed"
+    "prisma:reset": "prisma migrate reset --force --skip-seed",
+    "test": "jest",
+    "test:cov": "jest --coverage",
+    "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
