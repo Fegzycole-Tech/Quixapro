@@ -11,6 +11,7 @@
     "baseUrl": ".",
     "paths": {
       "@backend/*": ["apps/backend/src/*"],
+      "@db/*": ["apps/backend/generated/*"],
       "@frontend/*": ["apps/frontend/*"]
     }
   }

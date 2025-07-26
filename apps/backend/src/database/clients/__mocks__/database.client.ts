@@ -31,4 +31,6 @@ export class DatabaseClient implements OnModuleInit {
     groupBy: jest.fn(),
     $transaction: jest.fn(),
   };
+
+  user: { [key: string]: () => jest.Mock } = this.prismaMethods;
 }

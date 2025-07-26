@@ -1,1 +1,2 @@
+pnpm --filter ./apps/backend test:cov || exit 1
 pnpm lint-staged
