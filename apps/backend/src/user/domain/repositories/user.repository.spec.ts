@@ -85,4 +85,31 @@ describe('Repository: User ', () => {
 
     expect(mockedLog.error).toHaveBeenCalled();
   });
+
+  it('should find a user', async () => {
+    userRepository.user.findFirst = jest.fn().mockResolvedValue(dbUser);
+
+    const foundUser: User | null = await userRepository.findOne({
+      id: dbUser.id,
+      email: dbUser.email,
+    });
+
+    expect(userRepository.user.findFirst).toHaveBeenCalledWith({
+      where: { id: dbUser.id, email: dbUser.email },
+    });
+
+    expect(foundUser).toEqual(user);
+  });
+
+  it('should fail to find a user', async () => {
+    const error: Error = new Error('Something went wrong');
+
+    userRepository.user.findFirst = jest.fn().mockRejectedValue(error);
+
+    await expect(userRepository.findOne({ id: dbUser.id, email: dbUser.email })).rejects.toThrow(
+      error,
+    );
+
+    expect(mockedLog.error).toHaveBeenCalled();
+  });
 });

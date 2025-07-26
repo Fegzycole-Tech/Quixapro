@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserArgs } from './interfaces/create-user-args';
+import { GetUserFailureException } from '../exceptions/get-user-failure.exception';
 import { LoggerService } from '@nestjs/common';
 import { User } from '../models/user.model';
 import { UserCreationFailureException } from '../exceptions/user-creation-failure.exception';
 import { UserFactory } from '../factories/user.factory';
+import { UserNotFoundException } from '../exceptions/user-not-found.exception';
 import { UserRepository } from '../repositories/user.repository';
 import { UserService } from './user.service';
 import { faker } from '@faker-js/faker';
@@ -39,6 +40,7 @@ describe('User Service:', () => {
           provide: UserRepository,
           useValue: {
             save: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
@@ -57,15 +59,10 @@ describe('User Service:', () => {
     factory = app.get<UserFactory>(UserFactory);
   });
 
-  describe('Create user', () => {
-    let data: CreateUserArgs;
-
     it('should save a user', async () => {
-      //Arrange
       repository.save = jest.fn().mockResolvedValue(user);
       factory.create = jest.fn().mockReturnValue(user);
 
-      //Act
       const result: User = await service.create({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -74,7 +71,6 @@ describe('User Service:', () => {
         photoUrl: user.photoUrl,
       });
 
-      //Assert
       expect(factory.create).toHaveBeenCalledWith({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -86,11 +82,9 @@ describe('User Service:', () => {
       expect(result).toEqual(user);
     });
 
-    it('should throw CurrencyCreationFailureException', async () => {
-      // Mock the repository's create method to return null, simulating a failure.
+    it('should throw UserCreationFailureException', async () => {
       repository.save = jest.fn().mockRejectedValue(new Error());
 
-      // Act and Assert
       await expect(
         service.create({
           firstName: user.firstName,
@@ -101,5 +95,38 @@ describe('User Service:', () => {
         }),
       ).rejects.toThrow(UserCreationFailureException);
     });
+
+    it('should find a user', async () => {
+      repository.findOne = jest.fn().mockResolvedValue(user);
+
+      const foundUser: User = await service.get({
+        id: user.id,
+        email: user.email,
+      });
+
+      expect(repository.findOne).toHaveBeenCalledWith({ id: user.id, email: user.email });
+      expect(foundUser).toEqual(user);
+    });
+
+    it('should throw GetUserFailureException', async () => {
+      repository.findOne = jest.fn().mockRejectedValue(new Error());
+
+      await expect(
+        service.get({
+          id: user.id,
+          email: user.email,
+        }),
+      ).rejects.toThrow(GetUserFailureException);
+    });
+
+  it('should throw UserNotFoundException', async () => {
+    repository.findOne = jest.fn().mockResolvedValue(null);
+
+    await expect(
+      service.get({
+        id: user.id,
+        email: user.email,
+      }),
+    ).rejects.toThrow(UserNotFoundException);
   });
 });

@@ -1,8 +1,11 @@
 import { CreateUserArgs } from './interfaces/create-user-args';
+import { FindUserArgs } from './interfaces/find-user-args';
+import { GetUserFailureException } from '../exceptions/get-user-failure.exception';
 import { Injectable } from '@nestjs/common';
 import { User } from '../models/user.model';
 import { UserCreationFailureException } from '../exceptions/user-creation-failure.exception';
 import { UserFactory } from '../factories/user.factory';
+import { UserNotFoundException } from '../exceptions/user-not-found.exception';
 import { UserRepository } from '../repositories/user.repository';
 
 @Injectable()
@@ -33,6 +36,24 @@ export class UserService {
       return await this.repository.save(createdUser);
     } catch (error) {
       throw new UserCreationFailureException();
+    }
+  }
+
+  async get(data: FindUserArgs): Promise<User> {
+    try {
+      const user: User | null = await this.repository.findOne(data);
+
+      if (!user) {
+        throw new UserNotFoundException();
+      }
+
+      return user;
+    } catch (error) {
+      if (error instanceof UserNotFoundException) {
+        throw error;
+      }
+
+      throw new GetUserFailureException();
     }
   }
 }

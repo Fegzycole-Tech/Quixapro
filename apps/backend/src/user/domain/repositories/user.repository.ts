@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { mapUser, optimisticMapUser } from './helpers/map-user.helper';
 import { DatabaseService } from '../../../database/services/database.service';
+import { FindUser } from './interfaces/find-user.interface';
 import { User } from '../models/user.model';
 import { User as UserEntity } from '@db/prisma';
-import { optimisticMapUser } from './helpers/map-user.helper';
 
 @Injectable()
 export class UserRepository extends DatabaseService {
@@ -39,6 +40,27 @@ export class UserRepository extends DatabaseService {
       return optimisticMapUser(user);
     } catch (err) {
       this.#logger.error(`${msg} - Failed`, err, data);
+      throw err;
+    }
+  }
+
+  /**
+   * Find a user.
+     @param data id AND/OR email of the user to be found
+   * @returns {Promise<User | null>} Found user or null
+   */
+  async findOne({ id, email }: FindUser): Promise<User | null> {
+    const msg: string = `Finding user '${JSON.stringify({ id, email })}'`;
+    this.#logger.debug(`${msg}`);
+
+    try {
+      const user: UserEntity | null = await this.user.findFirst({
+        where: { id, email },
+      });
+
+      return mapUser(user);
+    } catch (err) {
+      this.#logger.error(`${msg} - Failed`, err, { id, email });
       throw err;
     }
   }

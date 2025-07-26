@@ -14,3 +14,10 @@ export function optimisticMapUser(user: UserEntity): User {
     updatedAt: user.updatedAt,
   });
 }
+
+export function mapUser(user: UserEntity | null): User | null {
+  if (!user) {
+    return null;
+  }
+  return optimisticMapUser(user);
+}
